@@ -156,7 +156,8 @@ Each page sets a simple `<title>`, so the native toolbar title stays clean:
 The Plotline web SDK is configured in `server/index.js` and `server/public/assets/plotline.js`.
 
 - The loader snippet is injected into every page `<head>`
-- `plotline('init', apiKey, userId)` uses separate demo users:
+- `PlotlineHotwire.start({ apiKey, userId, appOpenEvent })` (from `assets/plotline-hotwire.js`) replaces
+  `plotline('init', apiKey, userId)`; see "Hotwire handling" below. It uses separate demo users:
   - iOS: `vamsi_hotwire_ios`
   - Android: `vamsi_hotwire_android`
   - Web fallback: `vamsi_hotwire`
@@ -166,6 +167,26 @@ The Plotline web SDK is configured in `server/index.js` and `server/public/asset
 - `setRedirectListener` maps `home`, `detail`, and `modal` to the app routes
 - `setPlotlineEventsListener` records SDK events for debugging
 - Home includes a `data-plotline-widget="true"` placeholder
+
+### Hotwire handling (`plotline-hotwire.js`)
+
+Turbo replaces `<body>` on every visit, restores pages from cached copies, and Hotwire Native changes the
+URL before the new page is on screen. The Plotline web SDK 3.6.x assumes none of that. The adapter, loaded
+in `<head>` before `plotline.js`, makes it behave like the native SDKs:
+
+- A visit to another page closes the open campaign, as leaving a screen does in the Android SDK. Steps set
+  to "Don't dismiss on click outside" stay open. A refresh or a visit to the same page keeps it open.
+- Whatever stays open (that step, surveys, stories) moves to the new page; cached copies of overlays and
+  widgets are removed, so Back never shows a dead campaign or widget.
+- The page id follows the page on screen, so the next page's campaigns never show on the page being left.
+- "Open URL" CTAs go through Turbo or the native router inside Hotwire Native (`window.open` is a no-op on
+  Hotwire Native Android).
+- Queued analytics are sent before a WebView is hidden or reloaded.
+- `Hotwire App Open` fires once per app session across all WebViews. Point "app open" campaigns at it:
+  `Default: App Open` also fires on every iOS modal and pull-to-refresh.
+
+`turbo-cache-control: no-cache` is no longer needed, so Back is instant again. Once a Web SDK release
+handles Turbo itself, the adapter detects it and leaves those parts to the SDK; no code change is needed.
 
 ### Plotline DOM IDs
 

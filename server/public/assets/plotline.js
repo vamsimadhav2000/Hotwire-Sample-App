@@ -91,7 +91,14 @@
   window.__plotlineEvents = window.__plotlineEvents || [];
   window.__plotlineTracks = window.__plotlineTracks || [];
 
-  plotline("init", config.apiKey, config.userId);
+  // Init once per WebView, plus the Turbo / Hotwire Native lifecycle handling (plotline-hotwire.js).
+  // Trigger "on app open" campaigns on "Hotwire App Open": it fires once per app session across all
+  // WebViews, while "Default: App Open" fires on every WebView cold boot (iOS modals, pull-to-refresh).
+  PlotlineHotwire.start({
+    apiKey: config.apiKey,
+    userId: config.userId,
+    appOpenEvent: "Hotwire App Open",
+  });
   plotline("setLocale", "en");
   identify();
 
