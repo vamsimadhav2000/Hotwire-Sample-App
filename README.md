@@ -156,7 +156,7 @@ Each page sets a simple `<title>`, so the native toolbar title stays clean:
 The Plotline web SDK is configured in `server/index.js` and `server/public/assets/plotline.js`.
 
 - The loader snippet is injected into every page `<head>`
-- `PlotlineHotwire.start({ apiKey, userId, appOpenEvent })` (from `assets/plotline-hotwire.js`) replaces
+- `PlotlineHotwire.start({ apiKey, userId })` (from `assets/plotline-hotwire.js`) replaces
   `plotline('init', apiKey, userId)`; see "Hotwire handling" below. It uses separate demo users:
   - iOS: `vamsi_hotwire_ios`
   - Android: `vamsi_hotwire_android`
@@ -174,16 +174,29 @@ Turbo replaces `<body>` on every visit, restores pages from cached copies, and H
 URL before the new page is on screen. The Plotline web SDK 3.6.x assumes none of that. The adapter, loaded
 in `<head>` before `plotline.js`, makes it behave like the native SDKs:
 
-- A visit to another page closes the open campaign, as leaving a screen does in the Android SDK. Steps set
-  to "Don't dismiss on click outside" stay open. A refresh or a visit to the same page keeps it open.
+- A visit to another page closes the open campaign, as leaving a screen does in the Android SDK. It is
+  hidden at once, before Hotwire Native screenshots the screen being left, so the screenshot Android keeps
+  behind a modal sheet (and shows on Back) has no tooltip in it. Steps set to "Don't dismiss on click
+  outside" stay open. A refresh or a visit to the same page keeps it open.
 - Whatever stays open (that step, surveys, stories) moves to the new page; cached copies of overlays and
   widgets are removed, so Back never shows a dead campaign or widget.
 - The page id follows the page on screen, so the next page's campaigns never show on the page being left.
+- A multi-step campaign continues across WebViews: on iOS a modal is a second WebView, and a step on
+  `/modal` now shows there. The first WebView lets the campaign go, so it is not stuck waiting.
+- A WebView that is hidden (a dismissed iOS modal, the app in the background) closes its open campaign, as
+  Android does on pause. Shown again, its page counts as a new page view.
+- `Default: App Open` fires once per app session across all WebViews, as in the native SDKs, instead of on
+  every iOS modal and pull-to-refresh. Existing "app open" campaigns need no change.
 - "Open URL" CTAs go through Turbo or the native router inside Hotwire Native (`window.open` is a no-op on
   Hotwire Native Android).
 - Queued analytics are sent before a WebView is hidden or reloaded.
-- `Hotwire App Open` fires once per app session across all WebViews. Point "app open" campaigns at it:
-  `Default: App Open` also fires on every iOS modal and pull-to-refresh.
+
+Both apps add `PlotlineLaunch/<uuid>` to the user agent prefix (`AppDelegate.swift`,
+`HotwireDemoApplication.kt`), one id per app launch. With it, `Default: App Open` fires exactly once per
+launch. Without it the adapter treats a new WebView as the same app session when another one was used in
+the last 30 minutes, so a relaunch within 30 minutes is not counted as an app open.
+
+`PlotlineHotwire.debug()` in the WebView inspector shows the adapter state (shell, app open, walkthrough).
 
 `turbo-cache-control: no-cache` is no longer needed, so Back is instant again. Once a Web SDK release
 handles Turbo itself, the adapter detects it and leaves those parts to the SDK; no code change is needed.

@@ -9,7 +9,8 @@ class HotwireDemoApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        Hotwire.config.applicationUserAgentPrefix = "Hotwire Demo;"
+        // One id per app launch: lets the Plotline adapter count "Default: App Open" once per launch.
+        Hotwire.config.applicationUserAgentPrefix = "Hotwire Demo; PlotlineLaunch/${java.util.UUID.randomUUID()};"
         Hotwire.config.webViewDebuggingEnabled = BuildConfig.DEBUG
         Hotwire.config.logger.logLevel = if (BuildConfig.DEBUG) {
             HotwireLogLevel.DEBUG
