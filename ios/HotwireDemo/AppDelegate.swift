@@ -30,7 +30,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             .server(AppConfig.url(for: "/configurations/ios_v1.json")),
         ])
 
-        Hotwire.config.applicationUserAgentPrefix = "Hotwire Demo;"
+        // One id per app launch: lets the Plotline adapter count "Default: App Open" once per launch.
+        Hotwire.config.applicationUserAgentPrefix = "Hotwire Demo; PlotlineLaunch/\(UUID().uuidString);"
         Hotwire.config.backButtonDisplayMode = .minimal
         Hotwire.config.showDoneButtonOnModals = true
 
