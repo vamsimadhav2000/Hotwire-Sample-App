@@ -1,9 +1,12 @@
 package com.example.hotwiredemo
 
 import android.app.Application
+import android.util.Log
+import android.webkit.JavascriptInterface
 import dev.hotwire.core.config.Hotwire
 import dev.hotwire.core.logging.HotwireLogLevel
 import dev.hotwire.core.turbo.config.PathConfiguration
+import dev.hotwire.core.turbo.webview.HotwireWebView
 
 class HotwireDemoApplication : Application() {
     override fun onCreate() {
@@ -18,6 +21,13 @@ class HotwireDemoApplication : Application() {
             HotwireLogLevel.NONE
         }
 
+        // E2E log bridge: plotline.js posts each log line to the "HWLog" JS interface.
+        Hotwire.config.makeCustomWebView = { context ->
+            HotwireWebView(context).apply {
+                addJavascriptInterface(HWLogBridge(), "HWLog")
+            }
+        }
+
         Hotwire.loadPathConfiguration(
             context = this,
             location = PathConfiguration.Location(
@@ -25,5 +35,12 @@ class HotwireDemoApplication : Application() {
                 remoteFileUrl = "${BuildConfig.SERVER_URL}/configurations/android_v1.json"
             )
         )
+    }
+}
+
+class HWLogBridge {
+    @JavascriptInterface
+    fun log(message: String) {
+        Log.i("PlotlineE2E", message)
     }
 }

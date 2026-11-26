@@ -53,6 +53,10 @@ targets:
           NSAllowsLocalNetworking: true
         NSLocalNetworkUsageDescription: Hotwire Demo connects to your local development server.
         HotwireDemoBaseURL: http://localhost:3000
+        CFBundleURLTypes:
+          - CFBundleURLName: com.example.hotwiredemo
+            CFBundleURLSchemes:
+              - hwdemo
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
           UISceneConfigurations:

@@ -22,6 +22,17 @@
 	<string>1</string>
 	<key>HotwireDemoBaseURL</key>
 	<string>http://localhost:3000</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.example.hotwiredemo</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>hwdemo</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

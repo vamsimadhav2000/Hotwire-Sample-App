@@ -12,7 +12,8 @@
     },
     {
       "patterns": [
-        "/modal$"
+        "/modal$",
+        "/sheets-modal$"
       ],
       "properties": {
         "context": "modal",

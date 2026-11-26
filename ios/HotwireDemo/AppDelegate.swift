@@ -1,5 +1,6 @@
 import HotwireNative
 import UIKit
+import WebKit
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -35,8 +36,23 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         Hotwire.config.backButtonDisplayMode = .minimal
         Hotwire.config.showDoneButtonOnModals = true
 
+        // E2E log bridge: plotline.js posts each log line to WKScriptMessageHandler "hwlog".
+        Hotwire.config.makeCustomWebView = { configuration in
+            configuration.userContentController.add(HWLogHandler(), name: "hwlog")
+            return WKWebView(frame: .zero, configuration: configuration)
+        }
+
         #if DEBUG
         Hotwire.config.debugLoggingEnabled = true
         #endif
+    }
+}
+
+final class HWLogHandler: NSObject, WKScriptMessageHandler {
+    func userContentController(
+        _ userContentController: WKUserContentController,
+        didReceive message: WKScriptMessage
+    ) {
+        NSLog("PlotlineE2E %@", String(describing: message.body))
     }
 }
