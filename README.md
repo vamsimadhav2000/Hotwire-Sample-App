@@ -291,6 +291,129 @@ window.__plotlineEvents     // Plotline-generated events
 window.__plotlineRedirects  // redirect payloads received from Plotline
 ```
 
+## Test bed
+
+The app doubles as an end-to-end test bed for the Plotline Web SDK inside Turbo 8 and
+Hotwire Native. Every page is a normal Turbo page built with the same `layout()` and
+`chrome()`, and every Plotline target has a stable, unique `id`. `/features` is the index.
+
+### SDK and adapter switches
+
+| Query param | Cookie | Values | Default | Meaning |
+| --- | --- | --- | --- | --- |
+| `?sdk=` | `pl_sdk` | `prod`, `latest`, `local` | `latest` | Which SDK build to load: `@3.6.8`, `@latest`, or `/assets/sdk/plotline-local.js` |
+| `?adapter=` | `pl_adapter` | `1`, `0` | `1` | `1` loads `plotline-hotwire.js`; `0` skips it and `plotline.js` calls `plotline('init', ...)` directly |
+
+The cookie is set by the server on the first request with the query param, so the choice
+survives Turbo visits and new WebViews. Every page shows the active values in the
+`#build-badge` footer, for example `sdk: prod · adapter: on`.
+
+To test a local build, drop it at `server/public/assets/sdk/plotline-local.js` (the folder
+keeps a `.gitkeep`; the file is not committed) and open `/?sdk=local`, or press
+**SDK: local** on `/debug`.
+
+### User switching
+
+`POST /login` (form field `userId`) sets the `pl_user` cookie, `POST /logout` clears it,
+and `GET /login-as?userId=<id>` does the same from a link/redirect. All redirect `303` to
+`/`. While the cookie is set, `PLOTLINE_CONFIG.userId` and the
+`<meta name="plotline-user-id">` tag in `<head>` use it; otherwise the platform env
+defaults apply.
+
+### Pages and element ids
+
+| Page | Element ids | Purpose |
+| --- | --- | --- |
+| `/` | `home-features-link` (+ existing home ids, `plotline-widget`) | Link to the index, default widget slot |
+| `/detail` | existing detail ids | Push navigation |
+| `/modal` | existing modal ids | Native modal via path config |
+| `/features` | `features-title`, `nav-<page>` | Index of every test page |
+| `/tooltips` | `tt-a`, `tt-b`, `tt-c`, `tt-far` (2 screens down), `tt-next`, `tt-modal` | Tooltip targets and leaving links |
+| `/spotlight` | `spot-card`, `spot-btn`, `spot-leave` | Spotlight anchor, button and leave link |
+| `/sheets` | `sheet-trigger`, `sheet-input`, `sheet-leave`, `sheet-modal-link` | Sheet trigger, keyboard resize, sheet modal |
+| `/sheets-modal` | `sheets-modal-input`, `sheets-modal-trigger` | Modal target for sheets (`/sheets-modal$` rule) |
+| `/fullpage` | `fullpage-trigger`, `fullpage-leave` | Full page campaign |
+| `/floater` | `floater-content`, `floater-leave` | 3+ screen page for floaters |
+| `/media` | `pip-trigger`, `media-trigger`, `media-leave` | PIP and media campaigns |
+| `/widgets` | `hw-widget-default`, `hw-widget-stories`, `hw-widget-swipe`, `hw-widget-group-1`, `hw-widget-group-2`, `hw-widget-carousel`, `widgets-leave` | One widget slot per type |
+| `/surveys` | `survey-trigger`, `survey-leave` | Survey campaign |
+| `/clicks` | `click-id`, `click-class-1`, `click-class-2` (class `click-class`), `click-text` (text "Click Text Trigger"), `click-leave` | Click id / class / text targets |
+| `/triggers` | `trg-delay`, `trg-a`, `trg-b`, `trg-priority`, `trg-event-props`, `trg-leave` | Delay, composite, priority and property triggers |
+| `/exit` | `exit-home`, `exit-detail` | Page-exit triggers |
+| `/forms` | `form-same`, `form-error`, `form-error-msg`, `form-other`, `form-saved-msg` | Same-page 303, 422 error, other-page 303 |
+| `/frames` | `hw-frame` (lazy, `src=/frames/content`) | Lazy Turbo Frame |
+| `/frames/content` | `hw-widget-frame`, `frame-btn`, `frame-next` | Frame content 1 (fragment only) |
+| `/frames/content2` | `hw-widget-frame-2` | Frame content 2 (fragment only) |
+| `/streams` | `stream-add`, `stream-target` | Turbo Stream append |
+| `/streams/add` | appends `stream-block-<n>`, `hw-widget-stream-<n>`, `stream-btn-<n>`, `stream-target-<n>` | Stream response (n counts up per process) |
+| `/morph` | `hw-widget-morph`, `morph-target`, `morph-refresh` | Morph refresh with preserved scroll |
+| `/permanent` | `perm-box` (`data-turbo-permanent`), `hw-widget-perm`, `perm-next` | Permanent element across a visit |
+| `/permanent-2` | `perm-box`, `hw-widget-perm`, `perm-back` | Same permanent box |
+| `/replace` | `replace-link` (`data-turbo-action=replace`), `replace-normal` | Replace vs normal visit |
+| `/debug` | `debug-user-id`, `debug-sdk-version`, `debug-launch-id`, `debug-cookies`, `debug-user`, `debug-login`, `debug-logout`, `debug-event`, `debug-sdk-prod`, `debug-sdk-latest`, `debug-sdk-local`, `debug-adapter-on`, `debug-adapter-off`, `debug-log` | Runtime state, login, cookie switches and log tail |
+
+Every app button that should emit a Plotline event carries `data-pl-track="<event>"` (and
+optionally `data-pl-props='{"json":true}'`), which `plotline.js` turns into
+`plotline('track', ...)` and logs with source `app`. This keeps all scripts in `<head>`.
+
+### Deep links
+
+Scheme `hwdemo`, host `open`, query `path`:
+
+```
+hwdemo://open?path=/tooltips
+```
+
+iOS registers `CFBundleURLTypes` (`hwdemo`) in `project.yml`/`Info.plist` and handles cold
+and warm starts in `SceneDelegate`. Android registers an `intent-filter` on `MainActivity`
+and handles `onCreate`/`onNewIntent`, routing with the Hotwire navigator.
+
+### Launch overrides (test automation)
+
+iOS launch arguments, read through `UserDefaults`:
+
+```bash
+xcrun simctl launch booted com.example.hotwiredemo -baseURL http://localhost:3000 -userId e2e_user
+```
+
+Android intent extras:
+
+```bash
+adb shell am start -n com.example.hotwiredemo/.MainActivity \
+  --es baseUrl http://10.0.2.2:3000 --es userId e2e_user
+```
+
+When `userId` is given, the app opens `/login-as?userId=<id>` first (server sets `pl_user`
+and redirects `303` to `/`), then continues to any deep link.
+
+### Log endpoints
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/debug/log` | Append `{source, level, msg, url, ts}` as one line to `server/logs/e2e.log` and stdout (`PlotlineE2E ...`) |
+| `GET` | `/debug/log` | Last 500 log lines as a JSON array |
+| `POST` | `/debug/log/clear` | Empty the log file |
+| `GET` | `/health` | Health check |
+| `GET` | `/login-as?userId=<id>` | Set `pl_user`, redirect `303` to `/` |
+| `POST` | `/login`, `/logout` | Set / clear `pl_user`, redirect `303` to `/` |
+
+`plotline.js` forwards:
+
+- `console.log/info/warn/error` messages that start with `[Plotline` or contain
+  `plotline` (case-insensitive), source `console`.
+- Turbo events (`turbo:visit`, `turbo:before-render`, `turbo:render`, `turbo:load`,
+  `turbo:before-cache`, `turbo:frame-load`, `turbo:before-stream-render`,
+  `turbo:submit-end`), source `turbo`.
+- App button `track` calls, source `app`.
+- `pagehide`, `pageshow`, `visibilitychange`, source `lifecycle`.
+- Every line also goes to the native bridges when present: iOS
+  `WKScriptMessageHandler` `hwlog` (`NSLog("PlotlineE2E ...")`) and Android
+  `@JavascriptInterface` `HWLog` (`Log.i("PlotlineE2E", ...)`).
+
+`server/logs/` is gitignored. The `/frames` lazy-frame handler flips a loaded frame from
+`lazy` to `eager` to work around a Turbo 8.0.23 quirk where a second `src` change on a
+lazy frame renders the stale snapshot.
+
 ## Notes
 
 - The server is intentionally dependency-free.
