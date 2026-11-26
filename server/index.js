@@ -26,6 +26,7 @@ const assets = new Map([
   ["/assets/app.css", { file: "assets/app.css", type: "text/css; charset=utf-8" }],
   ["/assets/turbo.js", { file: "assets/turbo.js", type: "text/javascript; charset=utf-8" }],
   ["/assets/plotline.js", { file: "assets/plotline.js", type: "text/javascript; charset=utf-8" }],
+  ["/assets/plotline-hotwire.js", { file: "assets/plotline-hotwire.js", type: "text/javascript; charset=utf-8" }],
 ]);
 
 const iosPathConfiguration = {
@@ -114,7 +115,6 @@ function layout({ title, platform, body }) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f2efe7">
-  <meta name="turbo-cache-control" content="no-cache">
   <title>${escapeHtml(title)}</title>
   <link rel="stylesheet" href="/assets/app.css">
   <script src="/assets/turbo.js" defer></script>
@@ -133,6 +133,7 @@ function layout({ title, platform, body }) {
   <script>
     window.PLOTLINE_CONFIG = ${serializeForScript(plotlineConfigFor(platform))};
   </script>
+  <script src="/assets/plotline-hotwire.js"></script>
   <script src="/assets/plotline.js" defer></script>
 </head>
 <body id="app-body" class="platform-${platform}">
