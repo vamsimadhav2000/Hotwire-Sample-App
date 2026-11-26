@@ -1,0 +1,73 @@
+name: HotwireDemo
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+packages:
+  HotwireNative:
+    url: https://github.com/hotwired/hotwire-native-ios
+    from: 1.3.1
+
+targets:
+  HotwireDemo:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: HotwireDemo
+        excludes:
+          - Info.plist
+    dependencies:
+      - package: HotwireNative
+        product: HotwireNative
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.hotwiredemo
+        PRODUCT_NAME: HotwireDemo
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "5.9"
+        SWIFT_EMIT_LOC_STRINGS: NO
+        TARGETED_DEVICE_FAMILY: "1"
+        INFOPLIST_FILE: HotwireDemo/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: NO
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+    info:
+      path: HotwireDemo/Info.plist
+      properties:
+        CFBundleDisplayName: Hotwire Demo
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "1"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIApplicationSupportsIndirectInputEvents: true
+        UIViewControllerBasedStatusBarAppearance: true
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+          NSAllowsLocalNetworking: true
+        NSLocalNetworkUsageDescription: Hotwire Demo connects to your local development server.
+        HotwireDemoBaseURL: http://localhost:3000
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+
+schemes:
+  HotwireDemo:
+    build:
+      targets:
+        HotwireDemo: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    archive:
+      config: Release

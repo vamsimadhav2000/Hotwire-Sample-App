@@ -1,0 +1,261 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f2efe7;
+  --surface: #fbf9f3;
+  --ink: #17201c;
+  --muted: #657069;
+  --line: #dcd6c8;
+  --accent: #195c43;
+  --accent-ink: #f4fff9;
+  --chip: #e4ecdf;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101612;
+    --surface: #17201b;
+    --ink: #edf2ec;
+    --muted: #9aa69e;
+    --line: #2c3931;
+    --accent: #9cd9ac;
+    --accent-ink: #0b1a12;
+    --chip: #233128;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+.shell {
+  width: min(100%, 680px);
+  margin: 0 auto;
+  padding: max(20px, env(safe-area-inset-top)) 22px max(40px, env(safe-area-inset-bottom));
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 6px 0 26px;
+}
+
+.brand {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.platform {
+  max-width: 55%;
+  overflow: hidden;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.platform-ios .platform,
+.platform-android .platform {
+  border-color: transparent;
+  background: var(--chip);
+  color: var(--accent);
+}
+
+.page {
+  padding-top: 6px;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(42px, 12vw, 72px);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.lead {
+  max-width: 36ch;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.tiles {
+  display: grid;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.tile {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  text-decoration: none;
+  transition: transform 140ms ease, border-color 140ms ease;
+}
+
+.tile:active {
+  transform: scale(0.985);
+}
+
+.tile__index {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.tile__body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.tile__body strong {
+  font-size: 16px;
+}
+
+.tile__body small {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tile__arrow {
+  color: var(--accent);
+  font-size: 20px;
+}
+
+.panel {
+  margin-top: 34px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.panel__label {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.panel__copy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.checks {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checks li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.plotline-slot {
+  margin-top: 28px;
+}
+
+.plotline-slot:empty {
+  display: none;
+}
+
+.checks li::before {
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  content: "";
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  margin-top: 30px;
+  padding: 0 20px;
+  border-radius: 14px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.quiet {
+  display: block;
+  width: fit-content;
+  margin-top: 22px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.quiet::after {
+  content: " \2190";
+}
+
+@media (min-width: 620px) {
+  .shell {
+    padding-top: 42px;
+  }
+
+  .platform {
+    max-width: none;
+  }
+}

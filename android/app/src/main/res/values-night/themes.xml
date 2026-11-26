@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.HotwireDemo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand</item>
+        <item name="colorPrimaryVariant">@color/brand_dark</item>
+        <item name="colorSecondary">@color/brand</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="appBarLayoutStyle">@style/Widget.HotwireDemo.AppBarLayout</item>
+        <item name="toolbarStyle">@style/Widget.HotwireDemo.Toolbar</item>
+        <item name="colorControlNormal">@color/chrome_ink</item>
+        <item name="android:statusBarColor">@color/chrome</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+</resources>

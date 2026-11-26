@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.HotwireDemo.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Surface">
+        <item name="android:background">@color/chrome</item>
+    </style>
+
+    <style name="Widget.HotwireDemo.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/chrome</item>
+        <item name="titleTextColor">@color/chrome_ink</item>
+        <item name="subtitleTextColor">@color/chrome_ink</item>
+        <item name="colorControlNormal">@color/chrome_ink</item>
+        <item name="navigationIconTint">@color/chrome_ink</item>
+        <item name="toolbarNavigationButtonStyle">@style/Widget.HotwireDemo.Toolbar.Navigation</item>
+    </style>
+
+    <style name="Widget.HotwireDemo.Toolbar.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="tint">@color/chrome_ink</item>
+    </style>
+</resources>

@@ -1,0 +1,9 @@
+{
+  "name": "hotwire-native-demo-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Three-screen Hotwire Native demo server",
+  "scripts": {
+    "start": "node index.js"
+  }
+}
