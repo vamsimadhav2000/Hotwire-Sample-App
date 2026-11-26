@@ -259,3 +259,150 @@ h1 {
     max-width: none;
   }
 }
+
+/* ---- E2E test bed ---- */
+
+.button {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-list,
+.stack {
+  display: grid;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.nav-link {
+  display: block;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-link:active {
+  background: var(--chip);
+}
+
+#home-features-link {
+  margin-top: 18px;
+}
+
+#home-features-link.nav-link::after,
+.nav-link::after {
+  content: none;
+}
+
+.field {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+}
+
+.spacer {
+  height: 200vh;
+}
+
+.slot-label {
+  margin: 26px 0 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.note {
+  margin: 18px 0 0;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-error {
+  margin: 12px 0 0;
+  color: #b3261e;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-error:empty {
+  display: none;
+}
+
+.long-copy p {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.stream-block {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.link-target {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.build-badge {
+  padding: 10px 22px max(20px, env(safe-area-inset-bottom));
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.debug-log {
+  max-height: 320px;
+  overflow: auto;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#debug-state p {
+  margin: 6px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#debug-state .panel__label {
+  display: inline-block;
+  min-width: 68px;
+}
